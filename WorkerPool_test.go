@@ -8,7 +8,6 @@ import (
 
 func TestWorkerPool_ProcessTasks(t *testing.T) {
 	wp := NewWorkerPool()
-	defer wp.Shutdown()
 
 	wp.AddWorker()
 	wp.AddWorker()
@@ -21,4 +20,10 @@ func TestWorkerPool_ProcessTasks(t *testing.T) {
 		wp.AddTask(task)
 	}
 	time.Sleep(1 * time.Millisecond)
+
+	wp.Shutdown()
+
+	if wp.nextID.Load() != 51 {
+		t.Errorf("Not all tasks done")
+	}
 }
